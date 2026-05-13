@@ -25,7 +25,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
-import { absoluteUrl, siteConfig } from "@/lib/seo";
+import { absoluteFromOrigin, getPublicSiteUrl } from "@/lib/public-site-url";
+import { siteConfig } from "@/lib/seo";
 
 type Tool = {
   name: string;
@@ -153,45 +154,42 @@ const features = [
   },
 ];
 
-const itemListJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  name: `${siteConfig.name} — Developer Tools`,
-  description: siteConfig.description,
-  itemListOrder: "https://schema.org/ItemListOrderAscending",
-  numberOfItems: tools.length,
-  itemListElement: tools.map((tool, index) => ({
-    "@type": "ListItem",
-    position: index + 1,
-    name: tool.name,
-    description: tool.description,
-    url: tool.href.startsWith("/") ? absoluteUrl(tool.href) : tool.href,
-  })),
-};
+export default async function Home() {
+  const origin = await getPublicSiteUrl();
 
-const homeSoftwareJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: `${siteConfig.name}: ${siteConfig.tagline}`,
-  description: siteConfig.description,
-  applicationCategory: "DeveloperApplication",
-  operatingSystem: "Any",
-  url: siteConfig.url,
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-  },
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "5",
-    ratingCount: "12",
-    bestRating: "5",
-    worstRating: "1",
-  },
-};
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${siteConfig.name} — Developer Tools`,
+    description: siteConfig.description,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: tools.length,
+    itemListElement: tools.map((tool, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: tool.name,
+      description: tool.description,
+      url: tool.href.startsWith("/")
+        ? absoluteFromOrigin(origin, tool.href)
+        : tool.href,
+    })),
+  };
 
-export default function Home() {
+  const homeSoftwareJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: `${siteConfig.name}: ${siteConfig.tagline}`,
+    description: siteConfig.description,
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Any",
+    url: origin,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
   return (
     <main className="relative isolate flex min-h-svh flex-col overflow-hidden bg-background text-foreground">
       <script

@@ -10,6 +10,10 @@ const resolvedUrl =
   (vercelUrl ? `https://${vercelUrl}` : null) ||
   "https://json-formatter-eight-chi.vercel.app";
 
+// Prefer `NEXT_PUBLIC_SITE_URL=https://your-domain.com` in Vercel for stable
+// fallbacks. Runtime URLs for sitemap, robots, metadata and JSON-LD also use
+// the request Host via `getPublicSiteUrl()` so custom domains stay consistent.
+
 export const siteConfig = {
   url: resolvedUrl,
   name: "Devkit",

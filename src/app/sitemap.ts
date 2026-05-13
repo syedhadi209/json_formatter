@@ -1,19 +1,20 @@
 import type { MetadataRoute } from "next";
 
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteFromOrigin, getPublicSiteUrl } from "@/lib/public-site-url";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const base = await getPublicSiteUrl();
   const now = new Date();
 
   return [
     {
-      url: absoluteUrl("/"),
+      url: absoluteFromOrigin(base, "/"),
       lastModified: now,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
-      url: absoluteUrl("/json-formatter"),
+      url: absoluteFromOrigin(base, "/json-formatter"),
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.9,

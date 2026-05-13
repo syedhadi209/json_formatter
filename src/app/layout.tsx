@@ -3,8 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
+import { SiteJsonLd } from "@/components/site-json-ld";
 import { ThemeProvider } from "@/components/theme-provider";
-import { absoluteUrl, siteConfig } from "@/lib/seo";
+import { getPublicSiteUrl } from "@/lib/public-site-url";
+import { siteConfig } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,68 +18,75 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: `${siteConfig.name} — ${siteConfig.tagline}`,
-    template: `%s · ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  applicationName: siteConfig.name,
-  keywords: [...siteConfig.keywords],
-  authors: [...siteConfig.authors],
-  creator: siteConfig.creator,
-  publisher: siteConfig.publisher,
-  category: "technology",
-  referrer: "origin-when-cross-origin",
-  formatDetection: {
-    telephone: false,
-    email: false,
-    address: false,
-  },
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    siteName: siteConfig.name,
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
+function buildRootMetadata(siteUrl: string): Metadata {
+  return {
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: `${siteConfig.name} — ${siteConfig.tagline}`,
+      template: `%s · ${siteConfig.name}`,
+    },
     description: siteConfig.description,
-    url: siteConfig.url,
-    locale: siteConfig.locale,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${siteConfig.name} — ${siteConfig.tagline}`,
-    description: siteConfig.description,
-    creator: siteConfig.twitterHandle,
-    site: siteConfig.twitterHandle,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    nocache: false,
-    googleBot: {
+    applicationName: siteConfig.name,
+    keywords: [...siteConfig.keywords],
+    authors: [...siteConfig.authors],
+    creator: siteConfig.creator,
+    publisher: siteConfig.publisher,
+    category: "technology",
+    referrer: "origin-when-cross-origin",
+    formatDetection: {
+      telephone: false,
+      email: false,
+      address: false,
+    },
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      type: "website",
+      siteName: siteConfig.name,
+      title: `${siteConfig.name} — ${siteConfig.tagline}`,
+      description: siteConfig.description,
+      url: siteUrl,
+      locale: siteConfig.locale,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${siteConfig.name} — ${siteConfig.tagline}`,
+      description: siteConfig.description,
+      creator: siteConfig.twitterHandle,
+      site: siteConfig.twitterHandle,
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      nocache: false,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
-  },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
-  },
-  manifest: "/manifest.webmanifest",
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
-      ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
-      : undefined,
-  },
-};
+    icons: {
+      icon: "/favicon.ico",
+      shortcut: "/favicon.ico",
+      apple: "/apple-icon",
+    },
+    manifest: "/manifest.webmanifest",
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+        ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+        : undefined,
+    },
+  };
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteUrl = await getPublicSiteUrl();
+  return buildRootMetadata(siteUrl);
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -88,25 +97,6 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: dark)", color: siteConfig.themeColor },
   ],
   colorScheme: "dark light",
-};
-
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: siteConfig.name,
-  alternateName: siteConfig.tagline,
-  url: siteConfig.url,
-  description: siteConfig.description,
-  inLanguage: "en",
-  publisher: {
-    "@type": "Organization",
-    name: siteConfig.name,
-    url: siteConfig.url,
-    logo: {
-      "@type": "ImageObject",
-      url: absoluteUrl("/icon"),
-    },
-  },
 };
 
 export default function RootLayout({
@@ -130,11 +120,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Analytics />
-        <script
-          type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-        />
+        <SiteJsonLd />
       </body>
     </html>
   );

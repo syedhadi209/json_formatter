@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
 
-import { absoluteUrl, siteConfig } from "@/lib/seo";
+import { absoluteFromOrigin, getPublicSiteUrl } from "@/lib/public-site-url";
 
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const base = await getPublicSiteUrl();
+
   return {
     rules: [
       {
@@ -11,7 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/"],
       },
     ],
-    sitemap: absoluteUrl("/sitemap.xml"),
-    host: siteConfig.url,
+    sitemap: absoluteFromOrigin(base, "/sitemap.xml"),
+    host: base,
   };
 }
