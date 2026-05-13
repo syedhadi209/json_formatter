@@ -1,9 +1,124 @@
 import type { Metadata } from "next";
 
+import { absoluteUrl, siteConfig } from "@/lib/seo";
+import { jsonFormatterFaqs } from "./faq-data";
+
+const title = "JSON Formatter — Format, Validate & Beautify JSON Online";
+const description =
+  "Free online JSON formatter and validator. Paste or upload JSON to get a prettified, syntax-highlighted, side-by-side view. Minify, copy, download — 100% client-side, no signup.";
+const url = absoluteUrl("/json-formatter");
+
 export const metadata: Metadata = {
   title: "JSON Formatter",
-  description:
-    "Format, validate, and beautify JSON side-by-side with live syntax highlighting.",
+  description,
+  keywords: [
+    "json formatter",
+    "json beautifier",
+    "json pretty print",
+    "json validator",
+    "json minifier",
+    "json viewer",
+    "json parser online",
+    "format json online",
+    "online json formatter",
+    "free json formatter",
+    "json lint",
+    "prettify json",
+  ],
+  alternates: { canonical: "/json-formatter" },
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    title,
+    description,
+    url,
+    locale: siteConfig.locale,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    creator: siteConfig.twitterHandle,
+    site: siteConfig.twitterHandle,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+};
+
+const softwareJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "JSON Formatter",
+  alternateName: ["JSON Beautifier", "JSON Validator", "JSON Pretty Print"],
+  description,
+  applicationCategory: "DeveloperApplication",
+  applicationSubCategory: "JSON Tools",
+  operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript. Works in all modern browsers.",
+  url,
+  isAccessibleForFree: true,
+  inLanguage: "en",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: siteConfig.name,
+    url: siteConfig.url,
+  },
+  featureList: [
+    "Format & beautify JSON",
+    "Minify JSON",
+    "Validate JSON with line/column error reporting",
+    "Configurable indentation (2 spaces, 4 spaces, tabs)",
+    "Syntax-highlighted side-by-side view",
+    "Copy and download formatted JSON",
+    "Upload JSON files",
+    "Works offline, 100% client-side",
+  ],
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteConfig.url,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "JSON Formatter",
+      item: url,
+    },
+  ],
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: jsonFormatterFaqs.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: f.answer,
+    },
+  })),
 };
 
 export default function JsonFormatterLayout({
@@ -11,5 +126,24 @@ export default function JsonFormatterLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      {children}
+    </>
+  );
 }

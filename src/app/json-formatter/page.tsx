@@ -27,6 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
+import { jsonFormatterFaqs } from "./faq-data";
 
 type IndentOption = "2" | "4" | "tab";
 
@@ -457,6 +458,8 @@ export default function JsonFormatterPage() {
             </div>
           </Panel>
         </div>
+
+        <SeoContent />
       </div>
 
       <style>{`
@@ -595,6 +598,89 @@ function EmptyState() {
         Output appears here as soon as you start typing valid JSON.
       </div>
     </div>
+  );
+}
+
+function SeoContent() {
+  return (
+    <section
+      aria-labelledby="about-json-formatter"
+      className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[1.1fr_1fr]"
+    >
+      <article className="prose-tool space-y-4 rounded-2xl border bg-card/40 p-5 backdrop-blur sm:p-6">
+        <h2
+          id="about-json-formatter"
+          className="text-xl font-semibold tracking-tight sm:text-2xl"
+        >
+          A fast, free JSON formatter and validator
+        </h2>
+        <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Paste raw JSON on the left and our formatter instantly produces a
+          beautified, syntax-highlighted version on the right — with line numbers,
+          live validation and human-readable parse errors. Switch between{" "}
+          <strong>2-space</strong>, <strong>4-space</strong> or{" "}
+          <strong>tab</strong> indentation, minify back to a single line, copy to
+          clipboard, or download as a <code>.json</code> file.
+        </p>
+        <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Everything runs <strong>locally in your browser</strong>. Your JSON is
+          never uploaded or stored, so it&apos;s safe for sensitive payloads,
+          API tokens, internal schemas and production data.
+        </p>
+        <ul className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2 sm:text-[15px]">
+          {[
+            "Prettify and validate JSON",
+            "Minify back to one line",
+            "Syntax highlighting + line numbers",
+            "Configurable indentation",
+            "Copy, download, and upload",
+            "100% client-side & free",
+          ].map((feature) => (
+            <li
+              key={feature}
+              className="flex items-center gap-2 rounded-lg border bg-background/60 px-3 py-2 text-foreground/90"
+            >
+              <span className="size-1.5 rounded-full bg-emerald-500" />
+              {feature}
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <div
+        aria-labelledby="faq-heading"
+        className="rounded-2xl border bg-card/40 p-5 backdrop-blur sm:p-6"
+      >
+        <h2
+          id="faq-heading"
+          className="text-xl font-semibold tracking-tight sm:text-2xl"
+        >
+          Frequently asked questions
+        </h2>
+        <div className="mt-4 divide-y divide-border/60">
+          {jsonFormatterFaqs.map((faq, idx) => (
+            <details
+              key={faq.question}
+              className="group py-3 first:pt-0 last:pb-0"
+              {...(idx === 0 ? { open: true } : {})}
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-medium text-foreground sm:text-base">
+                <span>{faq.question}</span>
+                <span
+                  aria-hidden
+                  className="text-muted-foreground transition-transform group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+                {faq.answer}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
