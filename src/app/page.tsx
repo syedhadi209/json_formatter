@@ -58,8 +58,8 @@ const tools: Tool[] = [
     name: "Base64 Studio",
     description: "Encode or decode text and small files instantly.",
     icon: Binary,
-    href: "#",
-    status: "soon",
+    href: "/base64-studio",
+    status: "available",
     accent: "from-emerald-500/40 to-teal-500/40",
   },
   {

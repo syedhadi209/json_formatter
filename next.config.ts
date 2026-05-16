@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: "/jwt-decoder",
         permanent: true,
       },
+      {
+        source: "/base64studio",
+        destination: "/base64-studio",
+        permanent: true,
+      },
     ];
   },
 };
