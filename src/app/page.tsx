@@ -50,8 +50,8 @@ const tools: Tool[] = [
     name: "JWT Decoder",
     description: "Inspect headers, payloads, and signatures in real time.",
     icon: KeyRound,
-    href: "#",
-    status: "soon",
+    href: "/jwt-decoder",
+    status: "available",
     accent: "from-amber-500/40 to-rose-500/40",
   },
   {

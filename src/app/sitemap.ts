@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { absoluteFromOrigin, getPublicSiteUrl } from "@/lib/public-site-url";
+import { liveTools } from "@/lib/tools/registry";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = await getPublicSiteUrl();
@@ -13,11 +14,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 1,
     },
-    {
-      url: absoluteFromOrigin(base, "/json-formatter"),
+    ...liveTools.map((tool) => ({
+      url: absoluteFromOrigin(base, tool.href),
       lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
+      changeFrequency: tool.sitemapChangeFrequency,
+      priority: tool.sitemapPriority,
+    })),
   ];
 }

@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [
+      {
+        source: "/jwtdecoder",
+        destination: "/jwt-decoder",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
